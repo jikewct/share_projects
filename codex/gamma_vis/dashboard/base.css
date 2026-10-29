@@ -1,0 +1,25 @@
+.block-container {max-width:1480px;padding:2rem 2rem 1.5rem;}
+[data-testid="stSidebar"] {background:#fff;border-right:1px solid #e5ebf2;}
+[data-testid="stSidebar"] .block-container {padding:1rem .9rem;}
+[data-testid="stVerticalBlock"] {gap:.65rem;}
+h1 {font-size:1.8rem!important;letter-spacing:-.7px;font-weight:700!important;margin:.1rem 0!important;}
+h3 {font-size:1.08rem!important;font-weight:650!important;margin:.45rem 0 .2rem!important;}
+h4 {margin:.25rem 0!important;}
+[data-testid="stCaptionContainer"] {margin-top:-.15rem;}
+[data-testid="stMetric"] {background:white;border:1px solid #e5ebf2;border-radius:10px;padding:12px 14px;}
+[data-testid="stMetricLabel"] {color:#708196;font-size:.85rem;}
+[data-testid="stMetricValue"] {font-size:1.9rem;color:#172b42;}
+[data-testid="stVerticalBlockBorderWrapper"]>div {border-color:#e5ebf2!important;border-radius:12px;}
+.brand {font-size:24px;font-weight:750;letter-spacing:-.6px;margin:4px 0 2px;color:#15374a;}
+.brand span {color:#098793;}.subbrand {font-size:10px;color:#8593a3;letter-spacing:1.7px;margin-bottom:14px;}
+.eyebrow {font-size:10px;color:#098793;letter-spacing:1.7px;font-weight:650;margin-bottom:2px;}
+.source-chip {display:inline-block;background:#e8f5f4;color:#267875;padding:4px 10px;border-radius:16px;font-size:11px;}
+.st-key-analysis_navigation [role="radiogroup"] {gap:4px;padding:4px;background:#eaf0f4;border-radius:10px;flex-wrap:wrap;}
+.st-key-analysis_navigation [role="radiogroup"] label {margin:0!important;padding:7px 14px;border-radius:7px;transition:background .15s;}
+.st-key-analysis_navigation [role="radiogroup"] label:has(input:checked) {background:white;box-shadow:0 1px 5px rgba(32,54,69,.09);}
+.st-key-analysis_navigation [role="radiogroup"] label>div:first-child {position:absolute;opacity:0;width:1px;height:1px;overflow:hidden;}
+.st-key-analysis_navigation [role="radiogroup"] label:focus-within {outline:2px solid #098793;outline-offset:1px;}
+@media (max-width:700px) {
+    .block-container {padding:3.5rem .8rem 1rem;}
+    .st-key-analysis_navigation [role="radiogroup"] label {padding:6px 9px;}
+}

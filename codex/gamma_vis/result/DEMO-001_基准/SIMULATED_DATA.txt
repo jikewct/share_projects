@@ -1,0 +1,4 @@
+此目录由 generate_results.py 生成，所有数据均为模拟数据，仅用于交互功能演示。
+global.csv 为绑点与汇总数据；global.df 为全局曲线 DataFrame。
+bind_points.csv 包含 24 个模拟灰阶绑点。
+OKR 使用 0–1 范围，gray=0 的无效 Gamma/OKR 留空。
