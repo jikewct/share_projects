@@ -14,8 +14,8 @@ h4 {margin:.25rem 0!important;}
 .brand span {color:#098793;}.subbrand {font-size:10px;color:#8593a3;letter-spacing:1.7px;margin-bottom:14px;}
 .eyebrow {font-size:10px;color:#098793;letter-spacing:1.7px;font-weight:650;margin-bottom:2px;}
 .source-chip {display:inline-block;background:#e8f5f4;color:#267875;padding:4px 10px;border-radius:16px;font-size:11px;}
-.st-key-analysis_navigation [role="radiogroup"] {gap:4px;padding:4px;background:#eaf0f4;border-radius:10px;flex-wrap:wrap;}
-.st-key-analysis_navigation [role="radiogroup"] label {margin:0!important;padding:7px 14px;border-radius:7px;transition:background .15s;}
+.st-key-analysis_navigation [role="radiogroup"] {display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:4px;background:#eaf0f4;border-radius:10px;margin-bottom:12px;}
+.st-key-analysis_navigation [role="radiogroup"] label {margin:0!important;padding:7px 14px;border-radius:7px;transition:background .15s;flex:1;}
 .st-key-analysis_navigation [role="radiogroup"] label:has(input:checked) {background:white;box-shadow:0 1px 5px rgba(32,54,69,.09);}
 .st-key-analysis_navigation [role="radiogroup"] label>div:first-child {position:absolute;opacity:0;width:1px;height:1px;overflow:hidden;}
 .st-key-analysis_navigation [role="radiogroup"] label:focus-within {outline:2px solid #098793;outline-offset:1px;}

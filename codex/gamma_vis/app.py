@@ -202,11 +202,11 @@ def render_dashboard(experiments=None):
         '<div class="subbrand">DISPLAY ANALYTICS WORKSPACE</div>',
         unsafe_allow_html=True,
     )
+    menu = st.sidebar.radio("分析工作台", ANALYSIS_PAGES,
+                            label_visibility="collapsed", key="analysis_navigation")
     experiment_slot = st.sidebar.container()
     filter_slot = st.sidebar.container()
     settings_slot = st.sidebar.expander("数据配置", expanded=False)
-    menu = st.radio("分析工作台", ANALYSIS_PAGES, horizontal=True,
-                    label_visibility="collapsed", key="analysis_navigation")
     raw, source_label = source_data(experiments, settings_slot)
     if raw.empty:
         st.warning("数据为空，请提供至少一条测量记录。")
