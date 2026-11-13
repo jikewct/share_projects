@@ -11,25 +11,22 @@ def select_labeled(widgets, label):
 def test_all_analysis_pages_and_okr():
     app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
     assert not app.exception
-    assert len(app.get("plotly_chart")) == 2
-    for page in ["Band 维度", "屏幕维度", "实验对比", "自定义分析", "数据明细"]:
+    assert len(app.sidebar.checkbox) == 4
+    assert not app.sidebar.expander
+    assert not app.sidebar.selectbox
+    assert not app.sidebar.multiselect
+    assert not app.sidebar.slider
+    assert [widget.key for widget in app.sidebar.radio] == ["analysis_navigation"]
+    assert not app.sidebar.text_input
+    assert len(app.get("plotly_chart")) == 5
+    assert select_labeled(app.radio, "分析工作台").options == [
+        "全局统计", "Band 维度", "屏幕维度", "实验对比"
+    ]
+    for page in ["Band 维度", "屏幕维度", "实验对比"]:
         select_labeled(app.radio, "分析工作台").set_value(page).run()
         assert not app.exception, page
         select_labeled(app.selectbox, "当前分析指标").select("OKR").run()
         assert not app.exception, page
-
-
-def test_custom_same_axis_and_grouping():
-    app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
-    select_labeled(app.radio, "分析工作台").set_value("自定义分析").run()
-    select_labeled(app.selectbox, "横轴字段").select("RealGamma").run()
-    select_labeled(app.selectbox, "纵轴字段").select("RealGamma").run()
-    assert not app.exception
-    select_labeled(app.selectbox, "实验内分组").select("freq").run()
-    assert not app.exception
-    for kind in ["柱状图", "散点图", "箱线图", "直方图"]:
-        select_labeled(app.selectbox, "图表类型").select(kind).run()
-        assert not app.exception, kind
 
 
 def test_integration_missing_dimensions_and_empty_selection():

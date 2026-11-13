@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 from curves import aggregate_curve, make_curve_figure
+from .okr_metrics import OKR_COMPONENTS, prepare_component_okr
 from .overview import BIND_POINT_FIELDS, first_csv_value, parse_band_points, render_overview
 from .ui import COLORS, chart, render_page_header, section
 
@@ -34,19 +35,20 @@ def add_bind_point_guides(fig, df, experiment, curve_x):
     return points
 
 
-def render_okr_curve(df, curve_x, colors, bind_source, reference_df):
+def render_okr_curve(df, curve_x, colors, bind_source, reference_df, metric="OKR", label="OKR"):
     with st.container(border=True):
         heading, control = st.columns([3, 1])
-        heading.markdown("#### OKR 曲线")
-        show_mean = control.checkbox("显示均值线", value=True, key="global_okr_mean")
-        if "OKR" not in df or not df.OKR.notna().any():
+        heading.markdown(f"#### {label} 曲线")
+        prefix = "global_okr" if metric == "OKR" else f"global_{metric.lower()}"
+        show_mean = control.checkbox("显示均值线", value=True, key=f"{prefix}_mean")
+        if metric not in df or not df[metric].notna().any():
             st.info("当前全局统计表没有有效 OKR 数据。请映射已有 OKR 列，或提供可计算 OKR 的判定列。")
             return
-        okr_curve = aggregate_curve(df, "OKR", curve_x)
-        fig = make_curve_figure(okr_curve, "OKR", curve_x, colors,
+        okr_curve = aggregate_curve(df, metric, curve_x)
+        fig = make_curve_figure(okr_curve, metric, curve_x, colors,
                                 show_curve=True, show_mean=show_mean)
         add_bind_point_guides(fig, reference_df, bind_source, curve_x)
-        chart(fig, "global_okr_curve", global_curve=True)
+        chart(fig, f"{prefix}_curve", global_curve=True)
 
 
 def add_gamma_specs(fig, df, curve_x):
@@ -102,13 +104,21 @@ def render_curves(df, selected_experiments, reference_df):
     bind_source = selected_experiments[-1]
     st.caption(f"绑点参考：{bind_source} · 横轴刻度 / 垂直线")
     render_okr_curve(df, curve_x, colors, bind_source, reference_df)
+    missing = []
+    for metric, (label, flag, _) in OKR_COMPONENTS.items():
+        if metric not in df or not df[metric].notna().any():
+            missing.append(f"{label}（{metric} / {flag}）")
+            continue
+        render_okr_curve(df, curve_x, colors, bind_source, reference_df, metric, label)
+    if missing:
+        st.caption("缺少有效数据：" + "、".join(missing))
     render_gamma_curve(df, curve_x, colors, bind_source, reference_df)
 
 
 def render_page(df, selected_experiments=None, *, summary_df=None, result_root=None, source_label=""):
     """Render the entire page from canonical DataFrames without importing app.
 
-    df: curve rows with experiment, gray, OKR and/or RealGamma.
+    df: curves with experiment, gray, OKR, RealGamma, and optional component rates\n        L_OKR/X_OKR/Y_OKR or raw LSpecIn/XSpecIn/YSpecIn flags.
     summary_df: unfiltered CSV totals and band_points; defaults to df.
     selected_experiments: ordered experiment IDs; first is baseline, last supplies guides.
     result_root: optional explicit path for legacy bind_points.csv fallback only.
@@ -135,7 +145,7 @@ def render_page(df, selected_experiments=None, *, summary_df=None, result_root=N
         st.warning("请选择需要对比的实验。")
         return
     render_overview(reference_df, selected, result_root=result_root)
-    curves = df[df.experiment.isin(selected)]
+    curves = prepare_component_okr(df[df.experiment.isin(selected)])
     if curves.empty:
         st.info("当前筛选没有曲线数据，请调整筛选条件。")
         return

@@ -15,9 +15,15 @@ def chart(fig, key, *, global_curve=False):
         legend=dict(title_text="", orientation="h", x=0,
                     y=1.2 if global_curve else -.25,
                     yanchor="bottom" if global_curve else "top", font=dict(size=11)),
-        hovermode="x unified" if global_curve else "closest")
+        hovermode="x unified" if global_curve else "closest",
+        hoverlabel=dict(bgcolor="#fff", bordercolor="#d8e7ea",
+                        font=dict(color="#254353", size=12)),
+        legend_itemclick="toggle", legend_itemdoubleclick="toggleothers")
     fig.update_xaxes(showgrid=False, linecolor="#e9eef4", title_standoff=12, automargin=True)
     fig.update_yaxes(gridcolor="#e9eef4", zerolinecolor="#e9eef4")
+    if global_curve:
+        fig.update_xaxes(showspikes=True, spikemode="across", spikesnap="cursor",
+                         spikecolor="#9bbfc4", spikethickness=1, spikedash="dot")
     st.plotly_chart(fig, use_container_width=True, key=key,
                     config={"displaylogo": False, "toImageButtonOptions": {"format": "png", "scale": 2}})
 

@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 from analytics import prepare_data
 from demo import make_demo
+from dashboard.okr_metrics import prepare_component_okr
 
 
 def generate_results(root, overwrite=False):
@@ -15,7 +16,7 @@ def generate_results(root, overwrite=False):
         existing = [root / name / file for name in names for file in filenames if (root / name / file).exists()]
         if existing:
             raise FileExistsError(f"模拟结果已存在，未覆盖：{existing[0]}")
-    df = prepare_data(make_demo())
+    df = prepare_component_okr(prepare_data(make_demo()))
     for name, (_, data) in zip(names, df.groupby("experiment", sort=True)):
         directory = root / name
         directory.mkdir(parents=True, exist_ok=True)
@@ -27,6 +28,7 @@ def generate_results(root, overwrite=False):
                                ("screen.csv", ["screen", "freq", "dbv", "gray"])]:
             table = data.groupby(keys, observed=True).agg(
                 RealGamma=("RealGamma", "mean"), OKR=("OKR", "mean"),
+                L_OKR=("L_OKR", "mean"), X_OKR=("X_OKR", "mean"), Y_OKR=("Y_OKR", "mean"),
                 SpecGammaMin=("SpecGammaMin", "mean"), SpecGammaMax=("SpecGammaMax", "mean"),
                 sample_count=("gray", "size"), okr_valid_count=("OKR", "count"),
                 gamma_valid_count=("RealGamma", "count"),

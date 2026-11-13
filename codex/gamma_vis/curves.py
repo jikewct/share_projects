@@ -12,6 +12,7 @@ def aggregate_curve(df, metric, x):
 
 
 def make_curve_figure(curve, metric, x, colors, show_curve=True, show_mean=False, y_range=None):
+    is_okr = metric == "OKR" or metric.endswith("_OKR")
     fig = go.Figure()
     valid = curve.dropna(subset=["value"])
     if valid.empty:
@@ -25,7 +26,7 @@ def make_curve_figure(curve, metric, x, colors, show_curve=True, show_mean=False
             continue
         color = colors[experiment]
         mean = points.value.mean()
-        mean_label = f"{experiment} · 均值 {mean:.2%}" if metric == "OKR" else f"{experiment} · 均值 {mean:.4f}"
+        mean_label = f"{experiment} · 均值 {mean:.2%}" if is_okr else f"{experiment} · 均值 {mean:.4f}"
         if show_curve:
             fig.add_trace(go.Scatter(x=group[x], y=group.value,
                 name=mean_label if show_mean else experiment,
@@ -33,16 +34,16 @@ def make_curve_figure(curve, metric, x, colors, show_curve=True, show_mean=False
                 line=dict(color=color, width=2), marker=dict(size=4),
                 customdata=group[["count"]].to_numpy(),
                 hovertemplate=f"{x}=%{{x}}<br>{metric}=%{{y:.2%}}<br>有效记录=%{{customdata[0]}}<extra>%{{fullData.name}}</extra>"
-                if metric == "OKR" else f"{x}=%{{x}}<br>{metric}=%{{y:.4f}}<br>有效记录=%{{customdata[0]}}<extra>%{{fullData.name}}</extra>"))
+                if is_okr else f"{x}=%{{x}}<br>{metric}=%{{y:.4f}}<br>有效记录=%{{customdata[0]}}<extra>%{{fullData.name}}</extra>"))
         if show_mean:
             # Equal weight per valid plotted point, rather than reweighting by repeated rows.
             fig.add_trace(go.Scatter(x=[xmin, xmax], y=[mean, mean], mode="lines",
                 name=mean_label, showlegend=not show_curve, legendgroup=experiment,
                 line=dict(color=color, dash="dash", width=1.5),
                 hovertemplate="均值=%{y:.2%}<extra>%{fullData.name}</extra>"
-                if metric == "OKR" else "均值=%{y:.4f}<extra>%{fullData.name}</extra>"))
-    fig.update_layout(xaxis_title=x, yaxis_title="OKR / 合格率" if metric == "OKR" else "RealGamma")
-    if metric == "OKR":
+                if is_okr else "均值=%{y:.4f}<extra>%{fullData.name}</extra>"))
+    fig.update_layout(xaxis_title=x, yaxis_title=f"{metric.replace('_', ' ')} / 合格率" if is_okr else "RealGamma")
+    if is_okr:
         fig.update_yaxes(tickformat=".0%", range=[0, 1.05])
     if y_range is not None:
         if y_range[0] >= y_range[1]:

@@ -111,14 +111,12 @@ def prepare_data(raw, mapping=None, okr_scale=1, derive_okr=True, gamma_zero_inv
         df["OKR"] = df.OKR.div(okr_scale).where(df.OKR.between(0, okr_scale))
     return df
 
-
-def numeric_metrics(df):
+def numeric_metrics(df: pd.DataFrame):
     excluded = set(MATCH_KEYS + ["experiment", "有效判定项数"])
     columns = [c for c in df.select_dtypes(include="number").columns
                if c not in excluded and not c.startswith("原始::") and df[c].notna().any()]
     preferred = [c for c in ["RealGamma", "OKR", "Mesure_L", "Mesure_x", "Mesure_y"] if c in columns]
     return preferred + [c for c in columns if c not in preferred]
-
 
 def summarize(df, metrics, groups=("experiment",)):
     if not metrics:

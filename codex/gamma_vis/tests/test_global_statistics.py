@@ -87,3 +87,26 @@ def test_file_loader_returns_new_dataframe_and_csv_totals(tmp_path):
     assert loaded["toal_num"].tolist() == [100, 100]
     assert loaded["band_points"].tolist() == ["[0,4,8]", "[0,4,8]"]
     assert "toal_num" not in curves
+
+
+
+def test_component_curves_use_independent_flags_and_keep_interactions():
+    app = run_page(
+        'curves.assign(LSpecIn=[1, 0, 1, -1], '
+        'XSpecIn=[0, 1, 1, 1], YSpecIn=[1, 1, 0, 0])'
+    )
+    charts = app.get("plotly_chart")
+    assert len(charts) == 5
+    for chart, metric in zip(charts[1:4], ["L_OKR", "X_OKR", "Y_OKR"]):
+        spec = json.loads(chart.proto.spec)
+        assert spec["layout"]["yaxis"]["tickformat"] == ".0%"
+        assert spec["layout"]["yaxis"]["range"] == [0, 1.05]
+        assert spec["layout"]["xaxis"]["tickvals"] == [0, 8, 16]
+        assert len(spec["layout"]["shapes"]) == 3
+    luminance = json.loads(charts[1].proto.spec)
+    assert any("A · 均值 50.00%" == t["name"] for t in luminance["data"])
+    assert any("B · 均值 100.00%" == t["name"] for t in luminance["data"])
+    app.checkbox(key="global_l_okr_mean").uncheck().run()
+    assert not app.exception
+    spec = json.loads(app.get("plotly_chart")[1].proto.spec)
+    assert len(spec["data"]) == 2
