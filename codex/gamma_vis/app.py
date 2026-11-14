@@ -73,9 +73,12 @@ def select_experiments(df, experiment_slot):
         if key not in st.session_state:
             st.session_state[key] = st.session_state["experiment_select_all"]
     with experiment_slot:
-        st.markdown("**实验选择**")
-        with st.container(border=True):
-            st.markdown("📁 **result**")
+        with st.container(key="experiment_tree"):
+            st.markdown('<div class="sidebar-section-title">实验选择</div>'
+                        '<div class="sidebar-folder"><svg aria-hidden="true" viewBox="0 0 24 24" '
+                        'fill="none" stroke="currentColor" stroke-width="1.6">'
+                        '<path d="M3 7V5h6l2 2h10v12H3Z"/></svg>result</div>',
+                        unsafe_allow_html=True)
             st.checkbox("全部实验", key="experiment_select_all",
                         on_change=select_all_experiments, args=(experiments,))
             for index, experiment in enumerate(experiments):
@@ -96,6 +99,8 @@ def render_dashboard(experiments=None, *, result_root=None):
         '<div class="subbrand">DISPLAY ANALYTICS WORKSPACE</div>',
         unsafe_allow_html=True,
     )
+    st.sidebar.markdown('<div class="sidebar-section-title">分析工作台</div>',
+                        unsafe_allow_html=True)
     menu = st.sidebar.radio("分析工作台", ANALYSIS_PAGES,
                             label_visibility="collapsed", key="analysis_navigation")
     experiment_slot = st.sidebar.container()
