@@ -27,7 +27,7 @@ def add_bind_point_guides(fig, df, experiment, curve_x):
     points = sorted(dict.fromkeys(points))
     for point in points:
         fig.add_vline(x=point, line_width=1, line_dash="dot",
-                      line_color="rgba(68, 91, 112, 0.24)", layer="below")
+                      line_color="rgba(107, 129, 178, 0.18)", layer="below")
     if points:
         labels = [str(int(value)) if value.is_integer() else f"{value:g}" for value in points]
         fig.update_xaxes(tickmode="array", tickvals=points, ticktext=labels,
