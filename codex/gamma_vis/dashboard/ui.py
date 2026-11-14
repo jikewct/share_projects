@@ -4,27 +4,37 @@ import html
 import pandas as pd
 import streamlit as st
 
-COLORS = ["#098793", "#ee9b46", "#6f79c9", "#df6984", "#4ca888", "#9774b6"]
+COLORS = ["#3862f8", "#00a992", "#ff6974", "#8b6ce0", "#f4b544", "#3098dc"]
+HEATMAP_COLORS = ["#f0f4ff", "#dce5ff", "#a8bdfb", "#6a8aef", "#3862f8"]
 
 
 def chart(fig, key, *, global_curve=False):
-    fig.update_layout(font=dict(family="Inter, PingFang SC, Microsoft YaHei, sans-serif", color="#506176"),
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=8, r=12, t=48 if global_curve else 12, b=18),
+    fig.update_layout(template="plotly_white", colorway=COLORS,
+        font=dict(family="Inter, PingFang SC, Microsoft YaHei, sans-serif", color="#53627b", size=11),
+        paper_bgcolor="#ffffff", plot_bgcolor="#ffffff",
+        margin=dict(l=16, r=20, t=52 if global_curve else 24, b=24),
         height=330 if global_curve else 315,
         legend=dict(title_text="", orientation="h", x=0,
                     y=1.2 if global_curve else -.25,
-                    yanchor="bottom" if global_curve else "top", font=dict(size=11)),
+                    yanchor="bottom" if global_curve else "top", font=dict(size=11, color="#53627b"),
+                    bgcolor="rgba(0,0,0,0)"),
         hovermode="x unified" if global_curve else "closest",
-        hoverlabel=dict(bgcolor="#fff", bordercolor="#d8e7ea",
-                        font=dict(color="#254353", size=12)),
+        hoverlabel=dict(bgcolor="#ffffff", bordercolor="#dce4f4",
+                        font=dict(color="#1b3056", size=12)),
         legend_itemclick="toggle", legend_itemdoubleclick="toggleothers")
-    fig.update_xaxes(showgrid=False, linecolor="#e9eef4", title_standoff=12, automargin=True)
-    fig.update_yaxes(gridcolor="#e9eef4", zerolinecolor="#e9eef4")
+    axes = dict(gridcolor="#edf0f5", gridwidth=1,
+                linecolor="#e3e7ef", zerolinecolor="#e3e7ef",
+                tickfont=dict(color="#7b879d", size=10),
+                title_font=dict(color="#53627b", size=11), automargin=True)
+    fig.update_xaxes(showgrid=False, title_standoff=12, **axes)
+    fig.update_yaxes(**axes)
+    fig.update_coloraxes(colorscale=HEATMAP_COLORS,
+                         colorbar=dict(outlinewidth=0, tickfont=dict(color="#53627b")))
+    fig.update_traces(marker=dict(line=dict(width=0)), selector=dict(type="bar"))
     if global_curve:
         fig.update_xaxes(showspikes=True, spikemode="across", spikesnap="cursor",
-                         spikecolor="#9bbfc4", spikethickness=1, spikedash="dot")
-    st.plotly_chart(fig, use_container_width=True, key=key,
+                         spikecolor="#91a8ef", spikethickness=1, spikedash="dot")
+    st.plotly_chart(fig, use_container_width=True, key=key, theme=None,
                     config={"displaylogo": False, "toImageButtonOptions": {"format": "png", "scale": 2}})
 
 

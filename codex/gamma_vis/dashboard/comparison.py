@@ -50,7 +50,7 @@ def compare_view(df, metric):
         delta = "差值（百分点）" if metric == "OKR" else "差值"
         st.markdown("**差值分布 · 对比 − 基准**")
         fig = px.histogram(matched, x=delta, nbins=40, color_discrete_sequence=[COLORS[0]])
-        fig.add_vline(x=0, line_dash="dash", line_color="#ee9b46")
+        fig.add_vline(x=0, line_dash="dash", line_color=COLORS[1])
         chart(fig, "paired_hist")
     st.dataframe(result, hide_index=True, use_container_width=True)
     csv_download(result, "下载完整配对结果 CSV", "matched")

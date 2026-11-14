@@ -3,7 +3,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from analytics import summarize
-from .ui import chart, section, csv_download
+from .ui import HEATMAP_COLORS, chart, section, csv_download
 
 
 def trend_view(df, metric, key):
@@ -48,7 +48,7 @@ def dimension_view(df, metric, dimension):
         if not pivot.empty:
             with st.container(border=True):
                 st.markdown(f"**屏幕 × Band · {metric}**")
-                chart(px.imshow(pivot, color_continuous_scale="Teal", aspect="auto",
+                chart(px.imshow(pivot, color_continuous_scale=HEATMAP_COLORS, aspect="auto",
                     labels={"color": metric}, text_auto=".2%" if metric == "OKR" else ".3f"), "heatmap")
     st.dataframe(summarize(df, [metric], ["experiment", dimension]), hide_index=True, use_container_width=True)
     csv_download(agg, f"下载{label}统计 CSV", f"dimension_export_{dimension}")
